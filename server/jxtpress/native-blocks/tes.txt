@@ -1,0 +1,17 @@
+if( block_type == 'codehighlighter'){
+            var chlcss = document.head.querySelector("#chlcss");//code high light css
+            if ( ! chlcss ) {
+                chlcss = document.createElement("link");
+                chlcss.id = "chlcss"
+                chlcss.rel = "stylesheet"
+                chlcss.href= "https://unpkg.com/@highlightjs/cdn-assets@11.8.0/styles/default.min.css";
+                document.head.appendChild(chlcss)
+            } 
+            var chljs = document.head.querySelector("#chljs");//code high light js
+            if ( ! chljs ) {
+                chljs = document.createElement("script"); 
+                chljs.id = "chljs"
+                chljs.href= "https://unpkg.com/@highlightjs/cdn-assets@11.8.0/highlight.min.js";
+                document.head.appendChild(chljs)
+            } 
+        }

@@ -1,0 +1,22 @@
+export default {
+    accounts : ["id","parent_id","title","type","status","created","modified"],
+    options :["id","name","value"],
+    account_members :["id","account_id","user_id","status","end","created","modified"],
+    roles : ["id","account_id","title","description","image","created","modified"],
+    analytics : ["id","account_id","user_id","post_id","ip","duration","clicks","url_from","url_to","type","created","modified"],
+    users :["id","account_id","parent_id","name","title","email","status","eid","password","salt", "created","modified"],
+    user_metas : ["id","user_id","name","value", "created","updated"],
+    user_roles :["id","user_id","role_id","status","created","modified"],
+    tags: ["id","account_id","title","description","created","modified"],
+    groups: ["id","account_id","created_by","title","description","image","created","modified"],
+    group_members: ["id","group_id","user_id","status","type","end","created","modified"],
+    posts:["id","account_id","group_id","created_by","parent_id","type", "status","start","end","title","description","value",
+            "amount","url","linked_to","created","modified", "published", "source_id", "category_id", "eid", "linked_eid", "aux"],
+    post_access : ["id","post_id","read_group","update_group","delete_group","created","modified"],
+    post_metas :["id","post_id","name","value","created","modfied"],
+    post_linkages : [ "id","post_id", "related_id" ],
+    post_tags : ["id","tag_id", "post_id"],
+    post_notes : ["id","post_id","parent_id","title","value","encounter","status","created","modified", 'created_by'],
+    likes : ["id", "object_type", ,"object_id","value", "created","modified", 'created_by'],
+    categories : ['id','title','description','slug','parent_id','image']
+}
