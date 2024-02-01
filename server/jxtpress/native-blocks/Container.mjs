@@ -355,7 +355,7 @@ export default class {
 
         var styles = `style=" ${s("padding-top",pv)} ${s("padding-bottom",pv)} ${s("padding-left",ph)}`+ 
            `${s("padding-right",ph)} ${s("background-color",this.bg_color) } ` +
-           `${s("background-position",bg_pos)} ${s("background-size",bg_size)}"`
+           `${s("background-position",bg_pos)} ${s("background-size",bg_size)}  ${s('flex-direction',this.fle)}"`
 
         var html=  `<article ${id()} ${classes} ${styles}  ${iattrs()} > ` + 
             ` ${vid_tag} ${overlay}  ${inner_html}

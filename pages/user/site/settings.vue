@@ -104,6 +104,38 @@
             </div>
 
             <div class="card my-4">
+                <div class="flex items-center gap-2 mb-3"> 
+                    <h2>Site Email</h2>   
+                </div> 
+                <div class="flex gap-2 mb-2 items-start row"  >
+                    <div class="w-1/3">Service</div>
+                    <div class="w-2/3">
+                        <div class="flex gap-2">
+                            <s-input class="w-3/4"  type="text" v-model="site_email_host" placeholder="http://email.server.address.com" />    
+                            <s-input class="w-1/4" type="text" v-model="site_email_host_port" placeholder="465"></s-input>
+                        </div>
+                        
+                    </div> 
+                </div>
+                <div class="flex gap-2 mb-2 items-start row"  >
+                    <div class="w-1/3">Email Address</div>
+                    <div class="w-2/3">
+                        <s-input  type="text" v-model="site_email" placeholder="address@domain.com" />    
+                    </div> 
+                </div>
+                <div class="flex gap-2 mb-2 items-start row"  >
+                    <div class="w-1/3">Email Password</div>
+                    <div class="w-2/3">
+                        <s-input  type="password" v-model="site_email_password" placeholder="password" />    
+                    </div> 
+                </div>
+                 
+                <div class="flex justify-center p-2">
+                    <button class="button success" @click="hnd_save_update_email">Update</button>
+                </div>
+            </div>
+
+            <div class="card my-4">
                 <h2 class="mb-3">Stripe Account</h2>
                 <div class="row flex gap-2">
                     <div class="  w-1/3">Publishable Key</div>
@@ -252,7 +284,7 @@ definePageMeta({
 
 
 useHead({
-  title: store.rendered_post.title ||"Settings" ,
+  title:  "Settings" ,
   meta: [
     ... store.rendered_post.meta_seo
   ],
@@ -334,7 +366,43 @@ let hnd_save_font_script_links = async ()=>{
     var ret  = await useRequest({url: "/api/site/options", method: "post", body : payload })
 
 }
+let site_email = ref("") 
+let site_email_password = ref("")
+let site_email_host = ref("")
+let site_email_host_port = ref("") 
 
+let init_site_email_password  = async ()=>{ 
+    var data  = (await useRequest({ url: "/api/site/options?like=site_email" })).d || []
+    site_email.value = ""
+    site_email_password.value  = ""
+    console.log (data)
+    if ( data.length != 0 ) {
+        for(var i=0; i < data.length; i++){
+            if ( !data[i].name) continue;  
+            if (  data[i].name == 'site_email_password_secret' ){
+                site_email_password.value = data[i].value
+            }else if( data[i].name == 'site_email') {
+                site_email.value = data[i].value
+            }else if ( data[i].name == 'site_email_host'){
+                site_email_host.value = data[i].value 
+            }else if ( data[i].name == 'site_email_host_port'){
+                site_email_host_port.value = data[i].value 
+            }
+        }
+    }
+    console.log ( site_email.value , "//", site_email_password.value )
+}
+await init_site_email_password()
+let hnd_save_update_email = async ()=>{
+    var payload = [
+        { name : "site_email"           , value : site_email.value },
+        { name : "site_email_password_secret"  , value : site_email_password.value },
+        { name : "site_email_host", value : site_email_host.value },
+        { name : "site_email_host_port", value : site_email_host_port.value}
+    ]
+    var ret  = await useRequest({url: "/api/site/options", method: "post", body : payload })
+
+}
 
 // ----------------------------------------------------------------------------------
 // Layout Logic
@@ -549,7 +617,7 @@ let hnd_update_stripe = ()=>{
     for(var key in  (stripe_data.value)) {
         body.push ( { name : key, value : stripe_data.value[key] })
     }
-    console.log (body)
+    
     useRequest({url: "/api/site/options", method: "post", body   })
 }
 

@@ -102,4 +102,7 @@ let hnd_remove_item =(index)=>{
   stroke: var(--red-500);
   fill: var(--red-500);
 }
+.s-input input {
+  width: 100%;
+}
 </style>

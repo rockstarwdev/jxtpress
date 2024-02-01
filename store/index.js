@@ -628,6 +628,89 @@ export const useMainStore = defineStore('main', {
     async like ( options ) {
       var res = await useRequest({ method: 'post', url : '/api/likes', body : options})
       return  res 
+    },
+    /**
+     * Create a popup notice that will auto close based or closes when clicked.  Use type to specify color presentation
+     * @param {Object} options { title, content , type : optional (danger,primary, success, warn)}
+     */
+    push_notice(options ) {
+      if ( ! options ) return false;
+
+      // get or create the notice container
+      let notice_root = document.querySelector(".notice-container");// container to hold notices
+      if ( ! notice_root ) {
+        notice_root = document.createElement('article')
+        notice_root.classList.add("fixed","position-fixed", "flex", "items-center","justify-center", "flex-col","gap-1", "p-2", "w-full","z-500") 
+        notice_root.style.bottom="0px" 
+        document.body.appendChild(notice_root)
+        notice_root.classList.add("notice-container")
+      }
+
+      //Create the notice shell and style it
+      let notice = document.createElement("ul") 
+      notice.classList.add("notice","flex", "gap-2","items-start", "opacity-20","shadow")
+      notice.style.transition= "transform 240ms ease-in-out, opacity 240ms ease-in-out"
+      notice.style.transform = "translate(0px,30px) scale(0.6)"
+      notice.style.minWidth="11.5em"
+      notice.style.minHeight="1.0em"
+      let notice_content = document.createElement("li")
+      notice_content.classList.add("notice-content", "m-0","flex-1")
+
+      //placement for notice image -if any && for text
+      let notice_media = document.createElement("li") 
+      notice_media.classList.add("notice-media", "m-0")
+      
+
+      notice.appendChild(notice_media)
+      notice.appendChild(notice_content)
+
+      //Fill out text, description and image
+      var title=document.createElement("h3")
+      title.innerHTML = options.title || ""
+      title.classList.add("text-base")
+      var txt_content = document.createElement("div")
+      txt_content.innerHTML = options.content || ""
+      notice_content.appendChild(title)
+      notice_content.appendChild(txt_content) 
+      if ( options.img ) {
+        if ( options.img.startsWith("<svg")) {
+          notice_media.innerHTML = options.img 
+        }else { 
+          notice_media.innerHTML =`<img src="${options.img}">` 
+        }
+      } 
+      //Add notice to root
+      notice_root.appendChild(notice) 
+      setTimeout(()=>{
+        notice.classList.remove("opacity-20")
+        notice.classList.add("opacity-100")
+        notice.style.transform = "translate(0px,0px) scale(1.0)"
+      },5)
+
+      if ( options.type == 'danger'){
+        title.classList.add("color-red-500")
+      }else if ( options.type == 'success'){
+        title.classList.add("color-green-500")
+      }else if ( options.type == 'primary'){
+        title.classList.add("color-primary-500")
+      }
+
+      let delay = 5350
+      if ( options.delay != undefined){
+        if ( options.delay == false ) delay=null; 
+        else {
+          delay = options.delay 
+        }
+      }
+      let close_notice = ()=>{
+        notice.style.transform = "translate(0px,15px) scale(0.6)"
+        notice.classList.add("opacity-10")
+        setTimeout(()=> notice.remove(),250)//allow animation time to save and then close out
+      }
+      if ( delay ) {
+        setTimeout(()=> close_notice() ,delay)
+      }
+      notice.addEventListener('click', close_notice )
     }
   },
 

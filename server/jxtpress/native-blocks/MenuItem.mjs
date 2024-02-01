@@ -129,7 +129,7 @@ export default class  {
         if ( this.mega_menu ) {
             clz_mega_menu = 'mega'
         }
-        var children_wrapper = `<ul class="sub-menu ${clz_mega_menu}" sub-menu-of="${block_id}">${inner_html} </ul>`
+        var children_wrapper = `<div class="sub-menu ${clz_mega_menu}" sub-menu-of="${block_id}" ><ul class="content" >${inner_html} </ul></div>`
         if ( children && children.length== 0){
             children_wrapper = ``
         }

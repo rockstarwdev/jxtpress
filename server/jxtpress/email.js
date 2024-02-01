@@ -20,7 +20,7 @@ class Email {
         let log = (... args )=>{
             console.log (...args )
         }
-        return new Promise ( (resolve,reject)=>{
+        return new Promise ( async (resolve,reject)=>{
             if ( ! options) {
                 log("Email.options_missing");
                 return reject(new Error("Options is missing")) 

@@ -90,8 +90,10 @@ class Pages {
      * @returns 
      */
     async get_404_post(options){ 
+        var title =  (options.type||"Resource") + " not found"
+        if ( options.native ) title = null 
         var default_404 = { 
-            title : (options.type||"Resource") + " not found", id : options.id,
+            title , id : options.id,
                 description : "Could not locate " + (options.type||"resource") ,
                 type : "default-404",status:"published",  image: "/assets/img/404.png", layout : null ,
                 value : [
@@ -1001,6 +1003,7 @@ class Pages {
             post_type       = records[0].type || options.type 
             if ( post_id == template_id_404 ){
                 is_404_post  = true;
+                
                 console.log ("--------------------------------------- Post is 404+++-4500.2", is_404_post)
                 post = await this.get_404_post(options) 
             }else {  
