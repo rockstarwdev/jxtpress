@@ -230,7 +230,7 @@ export default async  (db, core) => {//db = instance of Database
         published       TIMESTAMP DEFAULT NULL, 
         aux             VARCHAR(255) DEFAULT NULL, 
 
-        INDEX ( group_id, created_by,parent_id,category_id, linked_to, type,status, url,eid,linked_eid)
+        INDEX ( group_id, created_by,parent_id,category_id, type,status, url,eid)
     ) ENGINE=INNODB;
 
 
