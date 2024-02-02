@@ -78,15 +78,15 @@ export default async (nuxtApp) => {
     await create_native_blocks(db, core )
     await create_initial_capabilities(db, core)
 
+    //create server root directory
+    await core.create_directory(core.get_server_root() + "/site-plugins")
     // {step Start plugins}
     await plugin.init({ })
+
 
     create_cron_jobs( db, core )
  
     //Must be the last thing to run otherwiseh core._is_ready will fail
     plugin.run_action("startup", "Invoked immediately upon server starting up.");
 
-    
-    //await core.generate_occurrences ({ post , start : [new Date(),  new Date(2024,1,5)]})
-    await ecommerce.get_pricing({ product_id : 4224});
 };

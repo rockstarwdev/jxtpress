@@ -445,7 +445,7 @@ class Pages {
         //Get Existing Data
         var existing_record = null; 
         if ( ! is_new ) {//when not new, get existing recourd
-            existing_record = await db.query(`SELECT account_id, group_id,published,status, type, url FROM ${tb_post} WHERE id=${db.esc(post.id)}`);
+            existing_record = await db.query(`SELECT  group_id,published,status, type, url FROM ${tb_post} WHERE id=${db.esc(post.id)}`);
             if ( existing_record.length >0){ //Record exist?
                 existing_record = existing_record[0];
                 existing_type   = existing_record.type;
@@ -491,7 +491,7 @@ class Pages {
         //If the post type is not private ,auto save metas and tags
         if ( !is_private_type ){
             // Auto Create Tags and associate it with the post.id
-            var sql = `SELECT id, title FROM ${tb_tags} WHERE ${db.is('account_id',post.account_id)} AND `+
+            var sql = `SELECT id, title FROM ${tb_tags} WHERE  `+
                         `${db.like("title", post.tags )}`
             var tag_ids = await db.query(sql);
             var tag_arr_to_create = [], tag_arr_existing =[], tag_does_exist=false;
@@ -505,7 +505,7 @@ class Pages {
                     }
                 }
                 if ( !tag_does_exist ){
-                    var t_tag = await this.update_tag({ title : post.tags[i] , account_id : post.account_id})
+                    var t_tag = await this.update_tag({ title : post.tags[i] })
                     tag_arr_existing.push({tag_id : t_tag.id , post_id : post.id})
                 }
             } 
@@ -657,7 +657,7 @@ class Pages {
                 selecting_events = true; 
             }
         }
-        if ( options.account_id ) where.push(db.is('account_id', options.account_i))
+ 
         if ( options.group_id   ) where.push(db.is('group_id', options.group_id))
         if ( options.created_by ) where.push(db.is('created_by', options.created_by))
         if ( options.status     ) where.push(db.is('status', options.status))
@@ -1741,7 +1741,7 @@ class Pages {
     }
     /**
      * Return an array of posts that match a given set of criteria and the post type is layout
-     * @param {Object} options { optional:[account_id, group_id, created_by, status,linked_to ,limit, p]}
+     * @param {Object} options { optional:[ group_id, created_by, status,linked_to ,limit, p]}
      * @returns {Array}
      */
     async get_layouts ( options ) {
@@ -1757,7 +1757,7 @@ class Pages {
         //Where expressions 
         var where = [];
         where.push(db.like('type', 'layout' )) 
-        if ( options.account_id)where.push(db.is('account_id' , options.account_id))
+        
         if ( options.group_id)  where.push(db.is('group_id'   , options.group_id))
         if ( options.created_by)where.push(db.is('created_by' , options.created_by))
         if ( options.status)    where.push(db.is('status'    , options.status))

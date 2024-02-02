@@ -12,7 +12,7 @@ class Groups {
     }
     /**
      * Given a user id, return all Groups that match
-     * @param {Object} options {user_id - approved member , account_id, id - group}
+     * @param {Object} options {user_id - approved member , id - group}
      * @returns Array of Groups
      */
     async get(options){
@@ -68,7 +68,7 @@ class Groups {
 
         if ( where.length ==0) return []
 
-        var sql = `SELECT id, account_id, name, parent_id,title, status, ` +
+        var sql = `SELECT id, name, parent_id,title, status, ` +
         
         ` FROM ${tb_users} WHERE ${where.join(" AND ")} `
         var ret = await db.query(sql);

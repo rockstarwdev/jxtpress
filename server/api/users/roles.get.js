@@ -28,7 +28,7 @@ export default defineEventHandler( async (event) => {
  
     var it;
     for(var i=0; d && i < d.length; i++){
-      it      = d[i] // { id, account_id , title, description, image , modifed, created }
+      it      = d[i] // { id , title, description, image , modifed, created }
       it.caps = await core.get_role_capabilities({ role : it.id })
     }
     return { d }

@@ -280,7 +280,7 @@ class DB {
                         unique_query.push(
                             has_account ?
                             `SELECT id FROM ${tb} WHERE name LIKE ${this.esc(d[i].name)} AND ${db.is('account_id',d[i].account_id )}`:
-                            `SELECT id FROM ${tb} WHERE name LIKE ${this.esc(d[i].name)} AND ${db.is('account_id',null )}`
+                            `SELECT id FROM ${tb} WHERE name LIKE ${this.esc(d[i].name)} `
                         )
                     }
                 }

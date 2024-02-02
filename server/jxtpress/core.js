@@ -626,7 +626,7 @@ class Core {
         var caps = [];  //The output to return
 
         var role_id = options.role
-        //Using the options.role(id number) grab the account_id and title for the role and store in var
+        //Using the options.role(id number) and title for the role and store in var
         if ( isNaN(options.role)) { 
             var tb_roles = `${db.name}.roles`;
             var sql = `SELECT id FROM ${tb_roles} WHERE ${db.is('id', options.role)}`
@@ -1282,7 +1282,7 @@ class Core {
     }
     /**
      * Get an option value
-     * @param {Object} options {name, account_id:null default, value : Default value to give(null), flat: Boolean }
+     * @param {Object} options {name, value : Default value to give(null), flat: Boolean }
      * @returns {Object}
      */
     async get_option(options){
@@ -1294,11 +1294,10 @@ class Core {
         var default_value = options.value || null; 
 
         //Get the Option using the name and 
-        var account_id = options.account_id || null;
         var sql = `SELECT * FROM ${db.name}.options WHERE ${db.like('name', name)} `; 
        
         var ret = await db.query(sql);
-        var opt = ret[0] || { name, value : default_value , account_id} ; 
+        var opt = ret[0] || { name, value : default_value } ; 
         if ( typeof opt.value == "string"){
             if (opt.value.charAt(0)== '[' || opt.value.charAt(0)== '{'){
                 try{
@@ -1320,14 +1319,13 @@ class Core {
 
     /**
      * Return multiple options at once.  By default, all are returned.
-     * @param {Object} options {optional:[account_id, like : when name  like]}
+     * @param {Object} options {optional:[ like : when name  like]}
      * @returns {Array}
      */
     async get_options(options){
         if ( ! options) return null; 
 
         //Get the Option using the name and 
-        var account_id = options.account_id || null;
         var cond_str = []
         if ( options.name_like || options.like){
             var val =  options.name_like || options.like 
@@ -1358,7 +1356,7 @@ class Core {
 
         
         var sql = `SELECT * FROM ${db.name}.options WHERE ` +
-                  `${db.is('account_id', account_id)} AND ${cond_str}`; 
+                  ` ${cond_str}`; 
 
         var ret = await db.query(sql); 
         for( var i =0; i <ret.length;i++){
@@ -1374,7 +1372,7 @@ class Core {
 
     /**
      * Perform an Update
-     * @param {Object} options An object { name, value, account_id} or an array of objects to update
+     * @param {Object} options An object { name, value} or an array of objects to update
      */
     async update_option(options){
    
@@ -1409,7 +1407,7 @@ class Core {
 
     /**
      * Remove an option value
-     * @param {Object} options {name, account_id:null default }
+     * @param {Object} options {name, :null default }
      * @returns {Object}
      */
     async remove_option(options){
@@ -1419,9 +1417,9 @@ class Core {
         var default_value = options.value || null; 
 
         //Get the Option using the name and 
-        var account_id = options.account_id || null;
+
         var sql = `DELETE FROM ${db.name}.options WHERE ` +
-                  `${db.like('name', name)} AND ${db.is('account_id', account_id)}`; 
+                  `${db.like('name', name)} `; 
        
          await db.query(sql);
  

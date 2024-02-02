@@ -67,15 +67,6 @@ export default async  (db, core) => {//db = instance of Database
     ) ENGINE=INNODB;
  
 
-    CREATE TABLE IF NOT EXISTS ${D}.roles (
-        id              BIGINT AUTO_INCREMENT PRIMARY KEY,  
-        title           VARCHAR(255) DEFAULT NULL,   
-        description     VARCHAR(255) DEFAULT NULL,   
-        image           VARCHAR(255) DEFAULT NULL,  
-
-        created         TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, 
-        modified        TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP 
-    ) ENGINE=INNODB;
      
 
     CREATE TABLE IF NOT EXISTS ${D}.categories (

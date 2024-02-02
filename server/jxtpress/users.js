@@ -144,28 +144,10 @@ class Users {
 
     
 
-    /**
-     * Get the account the user is associated with
-     * @param {Object|Number} options Given a user id or an object { user_id } return the user's account id
-     * @returns {Number} account_id
-     */
-    async get_user_account(options){
-        if ( ! options) return null; 
-        var user_id = options.user_id ? options.user_id : options;
-        var is_num = !isNaN(user_id)
-        if  (! is_num) return; 
-        var tb_user = `${db.name}.users`
-        var tb_acc = `${db.name}.accounts`
-        
-        var ret = await db.query(`SELECT account_id FROM ${tb_user} WHERE ${db.is('id', user_id)}`);
-        if ( ret.length ==0) return null; 
-
-        return ret[0].account_id;
-    }
-
+ 
     /**
      * 
-     * @param {Object} options { account_id, parent_id, status, meta}
+     * @param {Object} options { parent_id, status, meta}
      * @returns 
      */
     async get_users (options) {
@@ -176,7 +158,7 @@ class Users {
         var tb_users = `${db.name}.users`; 
 
         var where = [];
-        if ( options.account_id) where.push( db.is('account_id', options.account_id));
+       
         if ( options.parent_id) where.push( db.is('parent_id', options.parent_id));
         if ( options.status) where.push( Array.isArray(options.status) ? db.like('status', options.status): db.is('status', options.status));
         if ( options.role) {
@@ -195,7 +177,7 @@ class Users {
         if ( where.length == 0) where.push(" 1 ") 
         var where_expr = where.join(" AND ")
 
-        var sql = `SELECT id, account_id, parent_id, name, title, email, status FROM ${tb_users} T WHERE ${where_expr} ${await db.page_limit(options)}`
+        var sql = `SELECT id, parent_id, name, title, email, status FROM ${tb_users} T WHERE ${where_expr} ${await db.page_limit(options)}`
    
         var ret = await db.query(sql); 
          
@@ -238,20 +220,11 @@ class Users {
         if ( Array.isArray(options)){
             for(var i=0; i < options.length; i++){
                 if ( options[i].id){  where.push(db.is('id', options[i].id)); continue; }
-                if ( options[i].account_id && options[i].title ){
-                    where.push (
-                       '('+ db.is('account_id', options[i].account_id) + ' AND ' + db.is('title', options[i].title) + ')'
-                    )
-                    continue; 
-                }
+
             }
         }else {
             if ( options.id) where.push(db.is('id', options.id))
-            if ( options.account_id && options.title ){
-                where.push (
-                    '('+ db.is('account_id', options[i].account_id) + ' AND ' + db.is('title', options[i].title) + ')'
-                ) 
-            }
+
         }
         if ( where.length == 0) return; 
         var tb = `${db.name}.roles`
@@ -261,7 +234,7 @@ class Users {
         plugin.run_action('delete_role',options);
     }
     /**
-     * Given either an account_id or user_id, retrieve all roles
+     * Given either an  user_id, retrieve all roles
      * @param {Object} options {user_id }
      * @returns {Array}
      */

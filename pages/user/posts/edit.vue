@@ -339,7 +339,7 @@ useHead({
 
 /**
  * Will be initialized to store.post where store.post will be a object like
- * { id :Null/Undefined/int, account_id, group_id, ... value : Array of Block Instaces }.
+ * { id :Null/Undefined/int, group_id, ... value : Array of Block Instaces }.
  * 
  * post.value.value will point to block instances (Array)
  */

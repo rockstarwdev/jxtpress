@@ -16,15 +16,9 @@ export default defineEventHandler( async (event) => {
     
     let user            = event.user; 
     if ( ! user )         return await core.res_denied(event,) ;
-    
-    var user_account_id = await users.get_user_account(user.id);
+     
     var role;
-    for ( var i =0; i < body.length; i++){
-      role = body[i];
-      if ( !role.id && ! role.account_id){
-        role.account_id = user_account_id;
-      }
-    }
+  
 
     // {step check if user has adequate permission to perform this action}
     if ( !await core.can_user({user_id : user.id , cap: "manage_account"})) {
