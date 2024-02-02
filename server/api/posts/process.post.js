@@ -27,6 +27,7 @@ export default defineEventHandler( async (event) => {
  
     var params = event.context.params
     if (! body ) return {}
+    var post_type = body.type ; 
 
     var server_now = new Date()
     let today = core.to_user_time({ date: server_now  })
@@ -148,15 +149,15 @@ export default defineEventHandler( async (event) => {
             plugin.run_action('process_post',processed_post);
             
         }//End of looping all cookies
-        if ( ! processed_post.__is_404) {
+        if ( ! processed_post.__is_404 && post_type != 'preview') {
             var viewing_data = { 
                 user_id : user ? user.id : null,
                 post_id : processed_post.id || null, 
                 url_to: body.full_url || body.url, 
-                url_from: body.from_url , 
-            }
-            //viewing_data = await db.update('analytics', viewing_data );
-            //processed_post.analytic_id = viewing_data.id 
+                url_from: body.from_url || event.jxtpress.referer, 
+                //ip : event.jxtpress.ip 
+            } 
+            processed_post.analytics = viewing_data
         }
     }else {
         processed_post = { msg : "Hmmm, pleae contact administrator as at least 404 should be displayed here "}

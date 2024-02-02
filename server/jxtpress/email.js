@@ -1,15 +1,5 @@
 import nodemailer from "nodemailer"
-
-const transporter = nodemailer.createTransport({ 
-    host : process.env.APP_EMAIL_HOST,
-    port: process.env.APP_EMAIL_PORT,
-    secure: true,
-    auth: {
-        user: process.env.APP_EMAIL_USER,
-        pass: process.env.APP_EMAIL_PASSWORD
-    }
-}) 
-
+import core from "./core"
 class Email {
     /**
      * Sends and email using the environment configuration setup for nodemailer
@@ -20,6 +10,7 @@ class Email {
         let log = (... args )=>{
             console.log (...args )
         }
+
         return new Promise ( async (resolve,reject)=>{
             if ( ! options) {
                 log("Email.options_missing");
@@ -27,14 +18,32 @@ class Email {
             }
             //Verify required fields 
             var opt_errors = [];
-            if ( ! options.from ) options.from = process.env.APP_EMAIL_DEFAULT || process.env.APP_EMAIL_USER
             
-            if ( ! options.to     )     opt_errors.push("\"to\" field is missing")
-            if ( ! options.subject) opt_errors.push("\"subject\" field is missing")
+            
+            var email_settings = await core.get_options({ like : "site_email"})
+            var get_val = (name, val =null )=>{
+                var prop = email_settings.find(it => it.name == name ) ;
+                if ( ! prop ) return val; 
+                val = prop.value || val 
+                return val; 
+            }
+            var email_address   = get_val("site_email")
+            var email_password  = get_val("site_email_password_secret")
+            var email_host      = get_val("site_email_host")
+            var email_host_port = get_val("site_email_host_port");
+            console.log ({email_address,email_password,email_host_port, email_host})
+            const transporter = nodemailer.createTransport({ 
+                host : email_host,
+                port: email_host_port, secure: true,
+                auth: { user: email_address, pass: email_password }
+            }) 
+
+            if ( ! options.from     ) options.from = email_address
+            if ( ! options.to       ) opt_errors.push("\"to\" field is missing")
+            if ( ! options.subject  ) opt_errors.push("\"subject\" field is missing")
             if ( ! options.html && ! options.body)    opt_errors.push("\"html\" field is missing");
             if ( opt_errors.length > 0) {
-                reject(opt_errors);
-                return; 
+                reject(opt_errors); return; 
             }
             options.html = options.html || options.body 
             

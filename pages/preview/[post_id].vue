@@ -43,7 +43,8 @@ definePageMeta({
         full_url  : to.fullPath, 
         query     : to.query, 
         param     : to.params,
-        post_id   : to.params.post_id  
+        post_id   : to.params.post_id, 
+          
       },{ native: false }) 
        
     }

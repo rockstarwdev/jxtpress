@@ -27,11 +27,11 @@ export default defineEventHandler(async (event) => {
 
     let cookies = parseCookies(event ) 
     let headers = await getHeaders(event)
+    event.jxtpress = {cookies,headers } 
 
     if ( Object.keys(cookies).length==0){
         console.log ("================================Cookies passed in is EMPTY")
     }
-    event.jxtpress = {cookies,headers} 
     
     let user        = await core.verify_user(event) 
     
@@ -47,7 +47,8 @@ export default defineEventHandler(async (event) => {
     var server_time = new Date()
     var stz         = server_time.getTimezoneOffset()
     var method      = event.node.req.method.toLowerCase()
-
+    event.jxtpress.ip = ip 
+    event.jxtpress.referer = referer 
     setHeader(event,'stz',stz)
     setCookie(event,'stz',stz)
     if ( ['post','delete','put'].includes(method) ){

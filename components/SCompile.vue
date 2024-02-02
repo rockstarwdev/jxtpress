@@ -32,12 +32,8 @@ import SRadio from './SRadio.vue';
 import SReoccurPicker from './SReoccurPicker.vue';
 
 
-
-defineComponent({
-
-})
+ 
 const emit = defineEmits(['change','delete'])
-
 
 const store = useMainStore()
  
@@ -114,12 +110,41 @@ if ( post && Array.isArray(post.binding_blocks )){
     if ( typeof option_api.errorCaptured =='function')callable_on_error.push( option_api.errorCaptured )
     if ( typeof option_api.setup == 'function')callable_setup.push(option_api.setup ) 
 
+
   }
 }
+let init_analytics = () =>{
+    if ( ! post.analytics ) post.analytics = {} 
+    var t0=0 
+  let pg_click_listener = (e)=>{
+    if ( ! post.analytics.clicks ) post.analytics.clicks = 0
+    post.analytics.clicks++;
+    
+  } 
+  let pg_scroll_listener =(e)=>{
+    if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight) {
+        post.analytics.reached_end = true;
+    }
+  }
+  post.analytics
+  callable_on_mount.push( ()=>{
+    t0 = Date.now()
+    window.addEventListener('click',pg_click_listener )
+    window.addEventListener('scroll',pg_scroll_listener )
+  })
+
+  callable_on_unmount.push( ()=>{
+    post.analytics.duration = Date.now () - t0
+    window.removeEventListener('click',pg_click_listener )  
+    window.removeEventListener('scroll',pg_scroll_listener )
+    useRequest({ method: "post", url : "/api/site/analytics", body : post.analytics })
+  })
 
 
+}
+init_analytics ()
 
-let the_compiler = defineNuxtComponent({
+let the_compiler = defineComponent({
     name: "TheCompiler",
     template: post.rendered  ,
     components ,
@@ -151,6 +176,7 @@ let the_compiler = defineNuxtComponent({
     mounted (){
       window.__post = post 
       callable_on_mount.forEach(it => it())
+      console.log ("Called mounted++++++++++++++++++",callable_on_mount)
     },
     unmounted(){
       callable_on_unmount.forEach(it => it())
